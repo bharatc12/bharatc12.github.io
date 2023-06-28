@@ -1,11 +1,265 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <title>Function Plotter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    select,
+    button,
+    input[type="file"] {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    #plot {
+      width: 100%;
+      height: 300px;
+      border: 1px solid black;
+    }
+
+    .term-container {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>Bharat Choudhury: Software Engineer</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <div class="container">
+    <h1>Function Plotter</h1>
+
+    <label for="plot-options">Choose Plotting Method:</label>
+    <select id="plot-options">
+      <option value="upload">Upload Data File</option>
+      <option value="terms">Use Terms</option>
+    </select>
+
+    <div id="upload-container" style="display: none;">
+      <label for="file-upload">Upload Data File:</label>
+      <input type="file" id="file-upload" accept=".txt">
+    </div>
+
+    <div id="terms-container" style="display: none;">
+      <div class="term-container">
+        <label for="term1-select">Term 1:</label>
+        <select id="term1-select">
+          <option value="sin">sin(x)</option>
+          <option value="cos">cos(x)</option>
+          <option value="exp">exp(x)</option>
+          <option value="x^2">x^2</option>
+          <!-- Add more functions as needed -->
+        </select>
+      </div>
+
+      <div class="term-container">
+        <label for="term2-select">Term 2:</label>
+        <select id="term2-select">
+          <option value="sin">sin(x)</option>
+          <option value="cos">cos(x)</option>
+          <option value="exp">exp(x)</option>
+          <option value="x^2">x^2</option>
+          <!-- Add more functions as needed -->
+        </select>
+      </div>
+
+      <div class="term-container">
+        <label for="term3-select">Term 3:</label>
+        <select id="term3-select">
+          <option value="sin">sin(x)</option>
+          <option value="cos">cos(x)</option>
+          <option value="exp">exp(x)</option>
+          <option value="x^2">x^2</option>
+          <!-- Add more functions as needed -->
+        </select>
+      </div>
+    </div>
+
+    <button id="plot-button">Plot</button>
+
+    <svg id="plot" xmlns="http://www.w3.org/2000/svg" width="600" height="400"></svg>
+  </div>
+
+  <script>
+    const plotOptionsSelect = document.getElementById("plot-options");
+    const uploadContainer = document.getElementById("upload-container");
+    const termsContainer = document.getElementById("terms-container");
+    const plotButton = document.getElementById("plot-button");
+    const fileUpload = document.getElementById("file-upload");
+    const term1Select = document.getElementById("term1-select");
+    const term2Select = document.getElementById("term2-select");
+    const term3Select = document.getElementById("term3-select");
+
+    plotOptionsSelect.addEventListener("change", handlePlotOptionsChange);
+    plotButton.addEventListener("click", plotFunction);
+    fileUpload.addEventListener("change", handleFileUpload);
+
+    function handlePlotOptionsChange() {
+      const selectedOption = plotOptionsSelect.value;
+
+      if (selectedOption === "upload") {
+        uploadContainer.style.display = "block";
+        termsContainer.style.display = "none";
+      } else if (selectedOption === "terms") {
+        uploadContainer.style.display = "none";
+        termsContainer.style.display = "block";
+      }
+    }
+
+    function plotFunction() {
+      const selectedOption = plotOptionsSelect.value;
+
+      if (selectedOption === "upload") {
+        // Plot from uploaded file
+        if (fileUpload.files.length === 0) {
+          alert("Please upload a data file.");
+          return;
+        }
+
+        const file = fileUpload.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const contents = e.target.result;
+          plotDataFromFile(contents);
+        }
+
+        reader.readAsText(file);
+      } else if (selectedOption === "terms") {
+        // Plot using terms
+        const svg = document.getElementById("plot");
+        const width = parseInt(svg.getAttribute("width"));
+        const height = parseInt(svg.getAttribute("height"));
+        const plot = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+
+        const term1 = term1Select.value;
+        const term2 = term2Select.value;
+        const term3 = term3Select.value;
+
+        const points = [];
+
+        for (let x = -10; x <= 10; x += 0.1) {
+          let y = 0;
+
+          if (term1 === "sin") {
+            y += Math.sin(x);
+          } else if (term1 === "cos") {
+            y += Math.cos(x);
+          } else if (term1 === "exp") {
+            y += Math.exp(x);
+          } else if (term1 === "x^2") {
+            y += x ** 2;
+          }
+
+          if (term2 === "sin") {
+            y += Math.sin(x);
+          } else if (term2 === "cos") {
+            y += Math.cos(x);
+          } else if (term2 === "exp") {
+            y += Math.exp(x);
+          } else if (term2 === "x^2") {
+            y += x ** 2;
+          }
+
+          if (term3 === "sin") {
+            y += Math.sin(x);
+          } else if (term3 === "cos") {
+            y += Math.cos(x);
+          } else if (term3 === "exp") {
+            y += Math.exp(x);
+          } else if (term3 === "x^2") {
+            y += x ** 2;
+          }
+
+          points.push(`${scaleX(x, width)},${scaleY(y, height)}`);
+        }
+
+        plot.setAttribute("points", points.join(" "));
+        plot.setAttribute("fill", "none");
+        plot.setAttribute("stroke", "blue");
+
+        svg.innerHTML = "";
+        svg.appendChild(plot);
+      }
+    }
+
+    function plotDataFromFile(data) {
+      const svg = document.getElementById("plot");
+      const width = parseInt(svg.getAttribute("width"));
+      const height = parseInt(svg.getAttribute("height"));
+      const plot = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+
+      const lines = data.trim().split("\n");
+
+      const points = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim().split(" ");
+        const x = parseFloat(line[0]);
+        const y = parseFloat(line[1]);
+
+        points.push(`${scaleX(x, width)},${scaleY(y, height)}`);
+      }
+
+      plot.setAttribute("points", points.join(" "));
+      plot.setAttribute("fill", "none");
+      plot.setAttribute("stroke", "blue");
+
+      svg.innerHTML = "";
+      svg.appendChild(plot);
+    }
+
+    function scaleX(x, width) {
+      const minX = -10;
+      const maxX = 10;
+      return ((x - minX) / (maxX - minX)) * width;
+    }
+
+    function scaleY(y, height) {
+      const minY = -10;
+      const maxY = 10;
+      return height - ((y - minY) / (maxY - minY)) * height;
+    }
+
+    function handleFileUpload() {
+      const fileName = fileUpload.value.split("\\").pop();
+      const fileInputLabel = document.querySelector("label[for='file-upload']");
+
+      if (fileName) {
+        fileInputLabel.textContent = fileName;
+      } else {
+        fileInputLabel.textContent = "Upload Data File:";
+      }
+    }
+  </script>
 </body>
+
 </html>
