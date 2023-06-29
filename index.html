@@ -39,16 +39,36 @@
       border-radius: 5px;
       border: 1px solid #ccc;
       margin-bottom: 10px;
+      width: 100%;
     }
 
     #plot {
       width: 100%;
       height: 300px;
-      border: 1px solid black;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     .term-container {
       margin-bottom: 10px;
+    }
+
+    .plot-button-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .plot-button-container button {
+      width: 150px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .plot-button-container button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
@@ -103,9 +123,11 @@
       </div>
     </div>
 
-    <button id="plot-button">Plot</button>
+    <div class="plot-button-container">
+      <button id="plot-button">Plot</button>
+    </div>
 
-    <svg id="plot" xmlns="http://www.w3.org/2000/svg" width="600" height="400"></svg>
+    <svg id="plot" xmlns="http://www.w3.org/2000/svg" width="100%" height="300"></svg>
   </div>
 
   <script>
@@ -150,14 +172,14 @@
         reader.onload = function (e) {
           const contents = e.target.result;
           plotDataFromFile(contents);
-        }
+        };
 
         reader.readAsText(file);
       } else if (selectedOption === "terms") {
         // Plot using terms
         const svg = document.getElementById("plot");
-        const width = parseInt(svg.getAttribute("width"));
-        const height = parseInt(svg.getAttribute("height"));
+        const width = svg.clientWidth;
+        const height = svg.clientHeight;
         const plot = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
 
         const term1 = term1Select.value;
@@ -213,8 +235,8 @@
 
     function plotDataFromFile(data) {
       const svg = document.getElementById("plot");
-      const width = parseInt(svg.getAttribute("width"));
-      const height = parseInt(svg.getAttribute("height"));
+      const width = svg.clientWidth;
+      const height = svg.clientHeight;
       const plot = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
 
       const lines = data.trim().split("\n");
